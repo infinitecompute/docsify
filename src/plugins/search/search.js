@@ -58,7 +58,7 @@ function saveData(maxAge, expireKey, indexKey) {
 }
 
 export function genIndex(path, content = '', router, depth) {
-  const tokens = window.marked.lexer(content);
+  const tokens = window.markdownit.lexer(content);
   const slugify = window.Docsify.slugify;
   const index = {};
   let slug;

@@ -1,3 +1,4 @@
+import markdownit from 'markdown-it';
 import { isAbsolutePath, getPath, getParentPath } from '../router/util';
 import { isFn, merge, cached, isPrimitive } from '../util/core';
 import { tree as treeTpl } from './tpl';
@@ -11,7 +12,6 @@ import { paragraphCompiler } from './compiler/paragraph';
 import { taskListCompiler } from './compiler/taskList';
 import { taskListItemCompiler } from './compiler/taskListItem';
 import { linkCompiler } from './compiler/link';
-import marked from 'marked';
 
 const cachedLinks = {};
 
@@ -75,17 +75,17 @@ export class Compiler {
     const mdConf = config.markdown || {};
 
     if (isFn(mdConf)) {
-      compile = mdConf(marked, renderer);
+      compile = mdConf(markdownit, renderer);
     } else {
-      marked.setOptions(
+      markdownit.setOptions(
         merge(mdConf, {
           renderer: merge(renderer, mdConf.renderer),
         })
       );
-      compile = marked;
+      compile = markdownit;
     }
 
-    this._marked = compile;
+    this._markdownit = compile;
     this.compile = text => {
       let isCached = true;
       // eslint-disable-next-line no-unused-vars
@@ -177,7 +177,7 @@ export class Compiler {
   }
 
   _initRenderer() {
-    const renderer = new marked.Renderer();
+    const renderer = new markdownit.Renderer();
     const { linkTarget, router, contentBase } = this;
     const _self = this;
     const origin = {};
